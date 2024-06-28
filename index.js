@@ -14,6 +14,7 @@ function getIconUrl(str, origin, protocol) {
         value.includes('rel="icon"') ||
         value.includes('rel="shortcut icon"') ||
         value.includes('rel="icon shortcut"') ||
+        value.includes('rel="apple-touch-icon-precomposed"') ||
         value.includes('rel="apple-touch-icon"')
       ) {
         const matchRes = value.match(regex)
@@ -67,7 +68,8 @@ function getDescription(html) {
   if (Array.isArray(match)) {
     for (const value of match) {
       if (
-        value.includes('name="description"')
+        value.includes('name="description"') ||
+        value.includes('name=description')
       ) {
         const matchRes = value.match(regex)
         if (matchRes && matchRes[1]) {
