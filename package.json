@@ -1,13 +1,13 @@
 {
   "name": "info-web",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xjh22222228/info-web.git"
   },
   "homepage": "https://github.com/xjh22222228/info-web#readme",
   "description": "get web info",
-  "main": "index.min.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node --watch test.js",

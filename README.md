@@ -17,7 +17,7 @@ $ pnpm add info-web
 ```js
 import getInfoWeb from 'info-web';
 
-const { iconUrl, title, description } = await getInfoWeb('https://example.com')
+const { iconUrl, title, description, status } = await getInfoWeb('https://example.com', axiosConfig)
 ```
 
 ## License

@@ -2,7 +2,7 @@
 // See https://github.com/xjh22222228/web-info
 import axios from 'axios'
 
-function getIconUrl(str) {
+function getIconUrl(str, origin) {
   const regexGlobal = /<link .*? href="(.*?)"/gi
   const regex = /<link .*? href="(.*?)"/i
   const match = str.match(regexGlobal)
@@ -65,7 +65,6 @@ function getDescription(html) {
           description = describe
           break;
         }
-        
       }
     }
   }
@@ -73,8 +72,11 @@ function getDescription(html) {
   return description
 }
 
-async function getWebInfo(url) {
+async function getWebInfo(url, axiosConf) {
   const params = {
+    url,
+    status: true,
+    errorMsg: '',
     iconUrl: '',
     title: '',
     description: ''
@@ -85,13 +87,17 @@ async function getWebInfo(url) {
   }
 
   try {
-    const res = await axios.get(url)
+    const { origin } = new URL(url)
+    const res = await axios.get(url, {
+      ...axiosConf
+    })
     const html = res.data
-    params.iconUrl = getIconUrl(html)
+    params.iconUrl = getIconUrl(html, origin)
     params.title = getTitle(html)
     params.description = getDescription(html)
   } catch (error) {
-    
+    params.errorMsg = error.message
+    params.status = false
   }
   return params
 }
