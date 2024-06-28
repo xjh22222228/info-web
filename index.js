@@ -19,17 +19,22 @@ function getIconUrl(str, origin) {
         const matchRes = value.match(regex)
         if (matchRes && matchRes[1]) {
           let href = matchRes[1]
+          // 不完整路径
           if (!href.includes('://')) {
-            if (!href.startsWith('/')) {
-              href = '/' + href
+            // 合法路径 //example.com/favicon.ico
+            if (href.startsWith('//')) {
+              iconUrl = ':' + href
+            } else if (href.startsWith('/')) {
+              // href = '/' + href
+              iconUrl = origin + href
+            } else if (!href.startsWith('/')) {
+              iconUrl = origin + '/' + href
             }
-            iconUrl = origin + href
           } else {
             iconUrl = href
           }
           break;
         }
-        
       }
     }
   }
@@ -39,7 +44,7 @@ function getIconUrl(str, origin) {
 
 
 function getTitle(str) {
-  const regex = /<title>(.*)?<\/title>/i
+  const regex = /<title>([^<]*)?<\/title>/i
   const match = str.match(regex)
   let title = ''
   if (match && match[1]) {
@@ -88,7 +93,7 @@ async function getWebInfo(url, axiosConf) {
 
   try {
     const { origin } = new URL(url)
-    const res = await axios.get(url, {
+    const res = await axios.get(origin, {
       ...axiosConf
     })
     const html = res.data
