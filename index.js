@@ -2,11 +2,11 @@
 // See https://github.com/xjh22222228/web-info
 import axios from 'axios'
 
-function getIconUrl(str, origin) {
+function getIconUrl(str, origin, protocol) {
+  protocol = protocol.replace(':', '')
   const regexGlobal = /<link .*? href="(.*?)"/gi
   const regex = /<link .*? href="(.*?)"/i
   const match = str.match(regexGlobal)
-  let iconUrl = ''
 
   if (Array.isArray(match)) {
     for (const value of match) {
@@ -19,19 +19,24 @@ function getIconUrl(str, origin) {
         const matchRes = value.match(regex)
         if (matchRes && matchRes[1]) {
           let href = matchRes[1]
+
+          if (href.startsWith('://')) {
+            return protocol + href
+          }
+          // 合法路径 //example.com/favicon.ico
+          if (href.startsWith('//')) {
+            return protocol + ':' + href
+          }
+
           // 不完整路径
           if (!href.includes('://')) {
-            // 合法路径 //example.com/favicon.ico
-            if (href.startsWith('//')) {
-              iconUrl = ':' + href
-            } else if (href.startsWith('/')) {
-              // href = '/' + href
-              iconUrl = origin + href
+            if (href.startsWith('/')) {
+              return origin + href
             } else if (!href.startsWith('/')) {
-              iconUrl = origin + '/' + href
+              return origin + '/' + href
             }
           } else {
-            iconUrl = href
+            return href
           }
           break;
         }
@@ -39,7 +44,7 @@ function getIconUrl(str, origin) {
     }
   }
 
-  return iconUrl
+  return ''
 }
 
 
@@ -92,12 +97,12 @@ async function getWebInfo(url, axiosConf) {
   }
 
   try {
-    const { origin } = new URL(url)
+    const { origin, protocol } = new URL(url)
     const res = await axios.get(origin, {
       ...axiosConf
     })
     const html = res.data
-    params.iconUrl = getIconUrl(html, origin)
+    params.iconUrl = getIconUrl(html, origin, protocol)
     params.title = getTitle(html)
     params.description = getDescription(html)
   } catch (error) {
