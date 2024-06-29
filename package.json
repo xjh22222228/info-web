@@ -1,14 +1,14 @@
 {
   "name": "info-web",
-  "version": "0.0.9",
+  "version": "0.0.14",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xjh22222228/info-web.git"
   },
   "homepage": "https://github.com/xjh22222228/info-web#readme",
   "description": "get web info",
-  "main": "index.js",
   "type": "module",
+  "main": "index.min.js",
   "scripts": {
     "start": "node --watch test.js",
     "build": "rollup -c"
