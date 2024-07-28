@@ -4,8 +4,8 @@ import axios from 'axios';
 
 function getIconUrl(str, origin, protocol) {
   protocol = protocol.replace(':', '');
-  const regexGlobal = /<link .*?href="(.*?)"/gi;
-  const regex = /<link .*?href="(.*?)"/i;
+  const regexGlobal = /<link(.|\s)*?href="(.*?)"/gi;
+  const regex = /href="(.*?)"/i;
   const match = str.match(regexGlobal);
 
   if (Array.isArray(match)) {
@@ -69,8 +69,8 @@ function getTitle(str) {
 }
 
 function getDescription(html) {
-  const regexGlobal = /<meta .*?content="(.*?)"/gi;
-  const regex = /<meta .*?content="(.*?)"/i;
+  const regexGlobal = /<meta(.|\s)*?content="(.*?)"/gi;
+  const regex = /content="(.*?)"/i;
   const match = html.match(regexGlobal);
   let description = '';
 
