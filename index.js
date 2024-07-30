@@ -1,6 +1,7 @@
 // Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
 // See https://github.com/xjh22222228/web-info
 import axios from 'axios';
+import jschardet from 'jschardet';
 
 function getTitle(str) {
   const regex = /<title>([^<]*)?<\/title>/i;
@@ -16,13 +17,12 @@ function getIconUrl(str, origin, protocol) {
   protocol = protocol.replace(':', '');
   const regexGlobal = /<link(.|\s)*?\/?>/gi;
   const regex = /href="((.|\s)*?)"/i;
-  let match
+  let match;
   try {
-     match = str.match(regexGlobal);
+    match = str.match(regexGlobal);
   } catch (error) {
-    console.log('getIconUrl', error.message)
+    console.log('getIconUrl', error.message);
   }
-  
 
   if (Array.isArray(match)) {
     for (const value of match) {
@@ -78,11 +78,11 @@ function getDescription(html) {
   let description = '';
   const regexGlobal = /<meta(.|\s)*?\/?>/gi;
   const regex = /content="((.|\s)*?)"/i;
-  let match
+  let match;
   try {
     match = html.match(regexGlobal);
   } catch (error) {
-    console.log('getDescription：', error.message)
+    console.log('getDescription：', error.message);
   }
 
   if (Array.isArray(match)) {
@@ -122,16 +122,15 @@ async function getWebInfo(url, axiosConf) {
   try {
     const { origin, protocol } = new URL(url);
     const res = await axios.get(origin, {
-      headers:{
-        'Content-Type': 'text/html;charset=utf-8'
+      headers: {
+        'Content-Type': 'text/html;charset=utf-8',
       },
       responseType: 'arraybuffer',
       ...axiosConf,
     });
-    const contentType = (res.headers['content-type'] || '').toLowerCase();
-    // 中文编码
-    const gbk = contentType.includes('gbk') || contentType.includes('gb2312')
-    let html = new TextDecoder(gbk ? 'gbk' : 'utf-8').decode(res.data);
+    const buffer = Buffer.from(res.data, 'binary');
+    const charset = jschardet.detect(buffer).encoding || 'utf-8';
+    let html = new TextDecoder(charset).decode(res.data);
     params.iconUrl = getIconUrl(html, origin, protocol).trim();
     params.title = getTitle(html).trim();
     params.description = getDescription(html).trim();
