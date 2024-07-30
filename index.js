@@ -69,10 +69,15 @@ function getTitle(str) {
 }
 
 function getDescription(html) {
-  const regexGlobal = /<meta(.|\s)*?content="(.*?)"/gi;
-  const regex = /content="(.*?)"/i;
-  const match = html.match(regexGlobal);
   let description = '';
+  const regexGlobal = /<meta(.|\s)*?\/?>/gi;
+  const regex = /content="(.*?)"/i;
+  let match
+  try {
+    match = html.match(regexGlobal);
+  } catch (error) {
+    console.log('getDescription：', error.message)
+  }
 
   if (Array.isArray(match)) {
     for (const value of match) {
