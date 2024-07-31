@@ -6,23 +6,14 @@ import jschardet from 'jschardet';
 function getTitle(str) {
   const regex = /<title>([^<]*)?<\/title>/i;
   const match = str.match(regex);
-  let title = '';
-  if (match && match[1]) {
-    title = match[1];
-  }
-  return title;
+  return (match && match[1]) || '';
 }
 
 function getIconUrl(str, origin, protocol) {
   protocol = protocol.replace(':', '');
   const regexGlobal = /<link(.|\s)*?\/?>/gi;
-  const regex = /href="((.|\s)*?)"/i;
-  let match;
-  try {
-    match = str.match(regexGlobal);
-  } catch (error) {
-    console.log('getIconUrl', error.message);
-  }
+  const regex = /href=['"]((.|\s)*)?['"]/i;
+  const match = str.match(regexGlobal);
 
   if (Array.isArray(match)) {
     for (const value of match) {
@@ -77,13 +68,8 @@ function getIconUrl(str, origin, protocol) {
 function getDescription(html) {
   let description = '';
   const regexGlobal = /<meta(.|\s)*?\/?>/gi;
-  const regex = /content="((.|\s)*?)"/i;
-  let match;
-  try {
-    match = html.match(regexGlobal);
-  } catch (error) {
-    console.log('getDescription：', error.message);
-  }
+  const regex = /content=['"]((.|\s)*)?['"]/i;
+  const match = html.match(regexGlobal);
 
   if (Array.isArray(match)) {
     for (const value of match) {
@@ -116,6 +102,8 @@ async function getWebInfo(url, axiosConf) {
   };
 
   if (!url) {
+    params.status = false;
+    params.errorMsg = 'no url';
     return params;
   }
 
