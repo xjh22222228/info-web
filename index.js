@@ -2,7 +2,7 @@
 // See https://github.com/xjh22222228/web-info
 import axios from 'axios';
 import jschardet from 'jschardet';
-import path from 'node:path';
+import url from 'node:url';
 
 function getTitle(str) {
   const regex = /<title>([^<]*)?<\/title>/i;
@@ -52,7 +52,7 @@ function getIconUrl(str, origin, protocol) {
             if (href.startsWith('/')) {
               return origin + href;
             } else if (!href.startsWith('/')) {
-              return path.join(origin, href);
+              return url.resolve(origin, href);
             }
           } else {
             return href;
