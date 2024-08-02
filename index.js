@@ -12,7 +12,7 @@ function getTitle(str) {
 function getIconUrl(str, origin, protocol) {
   protocol = protocol.replace(':', '');
   const regexGlobal = /<link(.|\s)*?\/?>/gi;
-  const regex = /href=['"]((.|\s)*)?['"]/i;
+  const regex = /href=['"]((.|\s)*?)['"]/i;
   const match = str.match(regexGlobal);
 
   if (Array.isArray(match)) {
@@ -68,7 +68,7 @@ function getIconUrl(str, origin, protocol) {
 function getDescription(html) {
   let description = '';
   const regexGlobal = /<meta(.|\s)*?\/?>/gi;
-  const regex = /content=['"]((.|\s)*)?['"]/i;
+  const regex = /content=['"]((.|\s)*?)['"]/i;
   const match = html.match(regexGlobal);
 
   if (Array.isArray(match)) {
