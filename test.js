@@ -5,6 +5,6 @@ import getWebInfo from './index.js';
 // 乱码：http://www.qqyewu.com/
 // 乱码：https://www.iqnew.com/
 async function test() {
-  console.log(await getWebInfo('https://github.com/star-history/star-history'));
+  console.log(await getWebInfo('https://xiejiahe.com/'));
 }
 test();
