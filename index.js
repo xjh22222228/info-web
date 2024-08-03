@@ -5,7 +5,7 @@ import jschardet from 'jschardet';
 import url from 'node:url';
 
 function getTitle(str) {
-  const regex = /<title>([^<]*)?<\/title>/i;
+  const regex = /<title.*?>([^<]*)?<\/title>/i;
   const match = str.match(regex);
   return (match && match[1]) || '';
 }
