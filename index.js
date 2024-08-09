@@ -112,6 +112,7 @@ async function getWebInfo(url, axiosConf) {
     const { origin, protocol } = new URL(url);
     const res = await axios.get(url, {
       headers: {
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'Content-Type': 'text/html;charset=utf-8',
       },
       responseType: 'arraybuffer',
