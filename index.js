@@ -13,7 +13,8 @@ function getTitle(str) {
 function getIconUrl(str, origin, protocol) {
   protocol = protocol.replace(':', '');
   const regexGlobal = /<link(.|\s)*?\/?>/gi;
-  const regex = /href=['"]((.|\s)*?)['"]/i;
+  const regex = /href="((.|\s)*?)"/i;
+  const regex2 = /href='((.|\s)*?)'/i;
   const match = str.match(regexGlobal);
 
   if (Array.isArray(match)) {
@@ -32,8 +33,10 @@ function getIconUrl(str, origin, protocol) {
         value.includes(`rel='apple-touch-icon'`)
       ) {
         const matchRes = value.match(regex);
-        if (matchRes && matchRes[1]) {
-          let href = matchRes[1];
+        const matchRes2 = value.match(regex2);
+        const hasMatch = matchRes || matchRes2;
+        if (hasMatch && hasMatch[1]) {
+          let href = hasMatch[1];
 
           if (href.startsWith('data:image')) {
             return href;
@@ -69,7 +72,8 @@ function getIconUrl(str, origin, protocol) {
 function getDescription(html) {
   let description = '';
   const regexGlobal = /<meta(.|\s)*?\/?>/gi;
-  const regex = /content=['"]((.|\s)*?)['"]/i;
+  const regex = /content="((.|\s)*?)"/i;
+  const regex2 = /content='((.|\s)*?)'/i;
   const match = html.match(regexGlobal);
 
   if (Array.isArray(match)) {
@@ -80,9 +84,12 @@ function getDescription(html) {
         value.includes(`name='description'`)
       ) {
         const matchRes = value.match(regex);
+        const matchRes2 = value.match(regex2);
         if (matchRes && matchRes[1]) {
-          let describe = matchRes[1];
-          description = describe;
+          description = matchRes[1];
+          break;
+        } else if (matchRes2 && matchRes2[1]) {
+          description = matchRes2[1];
           break;
         }
       }
