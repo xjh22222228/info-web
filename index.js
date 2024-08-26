@@ -118,12 +118,23 @@ async function getWebInfo(url, axiosConf) {
       responseType: 'arraybuffer',
       ...axiosConf,
     });
+
     const buffer = Buffer.from(res.data, 'binary');
     const charset = jschardet.detect(buffer).encoding || 'utf-8';
     let html = new TextDecoder(charset).decode(res.data);
     params.iconUrl = getIconUrl(html, origin, protocol).trim();
     params.title = getTitle(html).trim();
     params.description = getDescription(html).trim();
+
+    try {
+      await axios.get(params.iconUrl);
+    } catch (error) {
+      try {
+        const favicon = `${origin}/favicon.ico`;
+        await axios.get(favicon);
+        params.iconUrl = favicon;
+      } catch (error) {}
+    }
   } catch (error) {
     params.errorMsg = error.message;
     params.status = false;
