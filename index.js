@@ -19,18 +19,19 @@ function getIconUrl(str, origin, protocol) {
 
   if (Array.isArray(match)) {
     for (const value of match) {
+      const val = value.toLowerCase();
       if (
-        value.includes('rel="icon"') ||
-        value.includes('rel=icon') ||
-        value.includes(`rel='icon'`) ||
-        value.includes('rel="shortcut icon"') ||
-        value.includes(`rel='shortcut icon'`) ||
-        value.includes(`rel='icon shortcut'`) ||
-        value.includes(`rel="icon shortcut"`) ||
-        value.includes('rel="apple-touch-icon-precomposed"') ||
-        value.includes(`rel='apple-touch-icon-precomposed'`) ||
-        value.includes('rel="apple-touch-icon"') ||
-        value.includes(`rel='apple-touch-icon'`)
+        val.includes('rel="icon"') ||
+        val.includes('rel=icon') ||
+        val.includes(`rel='icon'`) ||
+        val.includes('rel="shortcut icon"') ||
+        val.includes(`rel='shortcut icon'`) ||
+        val.includes(`rel='icon shortcut'`) ||
+        val.includes(`rel="icon shortcut"`) ||
+        val.includes('rel="apple-touch-icon-precomposed"') ||
+        val.includes(`rel='apple-touch-icon-precomposed'`) ||
+        val.includes('rel="apple-touch-icon"') ||
+        val.includes(`rel='apple-touch-icon'`)
       ) {
         const matchRes = value.match(regex);
         const matchRes2 = value.match(regex2);
@@ -78,10 +79,11 @@ function getDescription(html) {
 
   if (Array.isArray(match)) {
     for (const value of match) {
+      const val = value.toLowerCase();
       if (
-        value.includes('name="description"') ||
-        value.includes('name=description') ||
-        value.includes(`name='description'`)
+        val.includes('name="description"') ||
+        val.includes('name=description') ||
+        val.includes(`name='description'`)
       ) {
         const matchRes = value.match(regex);
         const matchRes2 = value.match(regex2);
