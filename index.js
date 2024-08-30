@@ -1,5 +1,5 @@
 // Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
-// See https://github.com/xjh22222228/web-info
+// See https://github.com/xjh22222228/info-web
 import axios from 'axios';
 import jschardet from 'jschardet';
 import url from 'node:url';
@@ -83,7 +83,9 @@ function getDescription(html) {
       if (
         val.includes('name="description"') ||
         val.includes('name=description') ||
-        val.includes(`name='description'`)
+        val.includes(`name='description'`) ||
+        val.includes('name="og:description"') ||
+        val.includes("name='og:description'")
       ) {
         const matchRes = value.match(regex);
         const matchRes2 = value.match(regex2);
