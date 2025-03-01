@@ -4,124 +4,119 @@ import axios from 'axios';
 import jschardet from 'jschardet';
 import url from 'node:url';
 
+const REGEX = {
+  TITLE_GLOBAL: /<title.*?>([^<]*)?<\/title>/gi,
+  TITLE: /<title.*?>([^<]*)?<\/title>/i,
+  META_GLOBAL: /<meta(.|\s)*?\/?>/gi,
+  LINK_GLOBAL: /<link(.|\s)*?\/?>/gi,
+  CONTENT_DOUBLE: /content="((.|\s)*?)"/i,
+  CONTENT_SINGLE: /content='((.|\s)*?)'/i,
+  HREF_DOUBLE: /href="((.|\s)*?)"/i,
+  HREF_SINGLE: /href='((.|\s)*?)'/i,
+};
+
+const getContent = (str, regexDouble, regexSingle) => {
+  const matchDouble = str.match(regexDouble);
+  const matchSingle = str.match(regexSingle);
+  return (
+    (matchDouble && matchDouble[1]) || (matchSingle && matchSingle[1]) || ''
+  );
+};
+
 function getTitle(str) {
-  const regex = /<title.*?>([^<]*)?<\/title>/i;
-  const match = str.match(regex);
-  return (match && match[1]) || '';
+  const match = str.match(REGEX.TITLE_GLOBAL);
+  if (!match) {
+    return '';
+  }
+  let title = '';
+  for (const value of match) {
+    const result = value.match(REGEX.TITLE);
+    const data = result?.[1];
+    if (data) {
+      title = data;
+    }
+  }
+  return title;
 }
 
 function getIconUrl(str, origin, protocol) {
-  protocol = protocol.replace(':', '');
-  const regexGlobal = /<link(.|\s)*?\/?>/gi;
-  const regex = /href="((.|\s)*?)"/i;
-  const regex2 = /href='((.|\s)*?)'/i;
-  const match = str.match(regexGlobal);
+  const iconRelations = [
+    'rel="icon"',
+    'rel=icon',
+    `rel='icon'`,
+    'rel="shortcut icon"',
+    `rel='shortcut icon'`,
+    `rel='icon shortcut'`,
+    `rel="icon shortcut"`,
+    'rel="apple-touch-icon-precomposed"',
+    `rel='apple-touch-icon-precomposed'`,
+    'rel="apple-touch-icon"',
+    `rel='apple-touch-icon'`,
+  ];
 
-  if (Array.isArray(match)) {
-    for (const value of match) {
-      const val = value.toLowerCase();
-      if (
-        val.includes('rel="icon"') ||
-        val.includes('rel=icon') ||
-        val.includes(`rel='icon'`) ||
-        val.includes('rel="shortcut icon"') ||
-        val.includes(`rel='shortcut icon'`) ||
-        val.includes(`rel='icon shortcut'`) ||
-        val.includes(`rel="icon shortcut"`) ||
-        val.includes('rel="apple-touch-icon-precomposed"') ||
-        val.includes(`rel='apple-touch-icon-precomposed'`) ||
-        val.includes('rel="apple-touch-icon"') ||
-        val.includes(`rel='apple-touch-icon'`)
-      ) {
-        const matchRes = value.match(regex);
-        const matchRes2 = value.match(regex2);
-        const hasMatch = matchRes || matchRes2;
-        if (hasMatch && hasMatch[1]) {
-          let href = hasMatch[1];
+  const match = str.match(REGEX.LINK_GLOBAL);
+  if (!Array.isArray(match)) return '';
 
-          if (href.startsWith('data:image')) {
-            return href;
-          }
+  for (const value of match) {
+    const val = value.toLowerCase();
+    if (!iconRelations.some((rel) => val.includes(rel))) continue;
 
-          if (href.startsWith('://')) {
-            return protocol + href;
-          }
-          // 合法路径 //example.com/favicon.ico
-          if (href.startsWith('//')) {
-            return protocol + ':' + href;
-          }
+    const href = getContent(value, REGEX.HREF_DOUBLE, REGEX.HREF_SINGLE);
+    if (!href) continue;
 
-          // 不完整路径
-          if (!href.includes('://')) {
-            if (href.startsWith('/')) {
-              return origin + href;
-            } else if (!href.startsWith('/')) {
-              return url.resolve(origin, href);
-            }
-          } else {
-            return href;
-          }
-          break;
-        }
-      }
+    if (href.startsWith('data:image')) return href;
+    if (href.startsWith('://')) return protocol + href;
+    if (href.startsWith('//')) return protocol + ':' + href;
+    if (!href.includes('://')) {
+      return href.startsWith('/') ? origin + href : url.resolve(origin, href);
     }
+    return href;
   }
-
   return '';
 }
 
 function getDescription(html) {
-  let description = '';
-  const regexGlobal = /<meta(.|\s)*?\/?>/gi;
-  const regex = /content="((.|\s)*?)"/i;
-  const regex2 = /content='((.|\s)*?)'/i;
-  const match = html.match(regexGlobal);
+  const match = html.match(REGEX.META_GLOBAL);
+  if (!Array.isArray(match)) return '';
 
-  if (Array.isArray(match)) {
-    for (const value of match) {
-      const val = value.toLowerCase();
-      if (
+  for (const value of match) {
+    const val = value.toLowerCase();
+    if (
+      !(
         val.includes('name="description"') ||
         val.includes('name=description') ||
         val.includes(`name='description'`) ||
         val.includes('name="og:description"') ||
         val.includes("name='og:description'")
-      ) {
-        const matchRes = value.match(regex);
-        const matchRes2 = value.match(regex2);
-        if (matchRes && matchRes[1]) {
-          description = matchRes[1];
-          break;
-        } else if (matchRes2 && matchRes2[1]) {
-          description = matchRes2[1];
-          break;
-        }
-      }
-    }
-  }
+      )
+    )
+      continue;
 
-  return description;
+    const description = getContent(
+      value,
+      REGEX.CONTENT_DOUBLE,
+      REGEX.CONTENT_SINGLE
+    );
+    if (description) return description;
+  }
+  return '';
 }
 
 async function getWebInfo(url, axiosConf) {
-  const params = {
-    url,
-    status: true,
-    errorMsg: '',
-    iconUrl: '',
-    title: '',
-    description: '',
-  };
-
   if (!url) {
-    params.status = false;
-    params.errorMsg = 'no url';
-    return params;
+    return {
+      url,
+      status: false,
+      errorMsg: 'no url',
+      iconUrl: '',
+      title: '',
+      description: '',
+    };
   }
 
   try {
     const { origin, protocol } = new URL(url);
-    const res = await axios.get(url, {
+    const { data } = await axios.get(url, {
       headers: {
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'Content-Type': 'text/html;charset=utf-8',
@@ -130,27 +125,46 @@ async function getWebInfo(url, axiosConf) {
       ...axiosConf,
     });
 
-    const buffer = Buffer.from(res.data, 'binary');
+    const buffer = Buffer.from(data, 'binary');
     const charset = jschardet.detect(buffer).encoding || 'utf-8';
-    let html = new TextDecoder(charset).decode(res.data);
-    params.iconUrl = getIconUrl(html, origin, protocol).trim();
-    params.title = getTitle(html).trim();
-    params.description = getDescription(html).trim();
+    const html = new TextDecoder(charset).decode(data);
 
-    try {
-      await axios.get(params.iconUrl);
-    } catch (error) {
-      try {
-        const favicon = `${origin}/favicon.ico`;
-        await axios.get(favicon);
-        params.iconUrl = favicon;
-      } catch (error) {}
-    }
+    const iconUrl = getIconUrl(html, origin, protocol).trim();
+    const finalIconUrl = await validateIconUrl(iconUrl, origin);
+
+    return {
+      url,
+      status: true,
+      errorMsg: '',
+      iconUrl: finalIconUrl,
+      title: getTitle(html).trim(),
+      description: getDescription(html).trim(),
+    };
   } catch (error) {
-    params.errorMsg = error.message;
-    params.status = false;
+    return {
+      url,
+      status: false,
+      errorMsg: error.message,
+      iconUrl: '',
+      title: '',
+      description: '',
+    };
   }
-  return params;
+}
+
+async function validateIconUrl(iconUrl, origin) {
+  try {
+    await axios.get(iconUrl);
+    return iconUrl;
+  } catch {
+    try {
+      const favicon = `${origin}/favicon.ico`;
+      await axios.get(favicon);
+      return favicon;
+    } catch {
+      return '';
+    }
+  }
 }
 
 export default getWebInfo;
