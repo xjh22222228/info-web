@@ -60,13 +60,15 @@ function getIconUrl(str, origin, protocol) {
   for (const value of match) {
     const val = value.toLowerCase();
     if (!iconRelations.some((rel) => val.includes(rel))) continue;
-
     const href = getContent(value, REGEX.HREF_DOUBLE, REGEX.HREF_SINGLE);
+
     if (!href) continue;
 
     if (href.startsWith('data:image')) return href;
     if (href.startsWith('://')) return protocol + href;
-    if (href.startsWith('//')) return protocol + ':' + href;
+    if (href.startsWith('//')) {
+      return protocol + ':' + href;
+    }
     if (!href.includes('://')) {
       return href.startsWith('/') ? origin + href : url.resolve(origin, href);
     }
@@ -153,17 +155,15 @@ async function getWebInfo(url, axiosConf) {
 }
 
 async function validateIconUrl(iconUrl, origin) {
-  try {
-    await axios.get(iconUrl);
+  if (iconUrl) {
     return iconUrl;
+  }
+  try {
+    const favicon = `${origin}/favicon.ico`;
+    await axios.get(favicon);
+    return favicon;
   } catch {
-    try {
-      const favicon = `${origin}/favicon.ico`;
-      await axios.get(favicon);
-      return favicon;
-    } catch {
-      return '';
-    }
+    return '';
   }
 }
 
