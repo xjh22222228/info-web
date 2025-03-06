@@ -1,6 +1,6 @@
 {
   "name": "info-web",
-  "version": "0.0.35",
+  "version": "0.0.36",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xjh22222228/info-web.git"
@@ -9,6 +9,7 @@
   "description": "get web info",
   "type": "module",
   "main": "index.min.js",
+  "types": "./index.d.ts",
   "scripts": {
     "start": "node --watch test.js",
     "build": "rollup -c"
