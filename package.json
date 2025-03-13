@@ -1,6 +1,6 @@
 {
   "name": "info-web",
-  "version": "0.0.37",
+  "version": "0.0.39",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/xjh22222228/info-web.git"
@@ -13,7 +13,8 @@
   "scripts": {
     "start": "node --watch test.js",
     "build": "rollup -c",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest index.test.js"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest index.test.js",
+    "release": "npm run test && npm run build && npm publish"
   },
   "author": "xiejiahe",
   "license": "MIT",
