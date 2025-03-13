@@ -1,6 +1,6 @@
 import getWebInfo from './index.js';
 
 async function test() {
-  console.log(await getWebInfo('https://xiejiahe.com/'));
+  console.log(await getWebInfo('https://www.xiejiahe.com'));
 }
 test();

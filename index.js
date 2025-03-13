@@ -3,8 +3,9 @@
 import axios from 'axios';
 import jschardet from 'jschardet';
 import url from 'node:url';
+import he from 'he';
 
-const REGEX = {
+export const REGEX = {
   TITLE_GLOBAL: /<title.*?>([^<]*)?<\/title>/gi,
   TITLE: /<title.*?>([^<]*)?<\/title>/i,
   META_GLOBAL: /<meta(.|\s)*?\/?>/gi,
@@ -13,6 +14,7 @@ const REGEX = {
   CONTENT_SINGLE: /content='((.|\s)*?)'/i,
   HREF_DOUBLE: /href="((.|\s)*?)"/i,
   HREF_SINGLE: /href='((.|\s)*?)'/i,
+  HTML_NOTE: /<!--(.|\s)*?-->/gm,
 };
 
 const getContent = (str, regexDouble, regexSingle) => {
@@ -23,7 +25,7 @@ const getContent = (str, regexDouble, regexSingle) => {
   );
 };
 
-function getTitle(str) {
+export function getTitle(str) {
   const match = str.match(REGEX.TITLE_GLOBAL);
   if (!match) {
     return '';
@@ -36,10 +38,10 @@ function getTitle(str) {
       title = data;
     }
   }
-  return title;
+  return he.decode(title);
 }
 
-function getIconUrl(str, origin, protocol) {
+export function getIconUrl(str, origin, protocol) {
   const iconRelations = [
     'rel="icon"',
     'rel=icon',
@@ -65,9 +67,9 @@ function getIconUrl(str, origin, protocol) {
     if (!href) continue;
 
     if (href.startsWith('data:image')) return href;
-    if (href.startsWith('://')) return protocol + href;
+    if (href.startsWith('://')) return protocol + href.slice(1);
     if (href.startsWith('//')) {
-      return protocol + ':' + href;
+      return protocol + href;
     }
     if (!href.includes('://')) {
       return href.startsWith('/') ? origin + href : url.resolve(origin, href);
@@ -77,7 +79,7 @@ function getIconUrl(str, origin, protocol) {
   return '';
 }
 
-function getDescription(html) {
+export function getDescription(html) {
   const match = html.match(REGEX.META_GLOBAL);
   if (!Array.isArray(match)) return '';
 
@@ -109,7 +111,7 @@ async function getWebInfo(url, axiosConf) {
     return {
       url,
       status: false,
-      errorMsg: 'no url',
+      errorMsg: 'No url',
       iconUrl: '',
       title: '',
       description: '',
@@ -119,17 +121,20 @@ async function getWebInfo(url, axiosConf) {
   try {
     const { origin, protocol } = new URL(url);
     const { data } = await axios.get(url, {
+      ...axiosConf,
       headers: {
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'Content-Type': 'text/html;charset=utf-8',
+        ...axiosConf?.headers,
       },
-      responseType: 'arraybuffer',
-      ...axiosConf,
+      responseType: axiosConf?.responseType ?? 'arraybuffer',
     });
 
     const buffer = Buffer.from(data, 'binary');
     const charset = jschardet.detect(buffer).encoding || 'utf-8';
-    const html = new TextDecoder(charset).decode(data);
+    const html = new TextDecoder(charset)
+      .decode(data)
+      .replace(REGEX.HTML_NOTE, '');
 
     const iconUrl = getIconUrl(html, origin, protocol).trim();
     const finalIconUrl = await validateIconUrl(iconUrl, origin);

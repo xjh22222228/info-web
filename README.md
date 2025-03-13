@@ -1,4 +1,3 @@
-
 抓取网站信息
 
 ## 使用
@@ -14,13 +13,16 @@ $ pnpm add info-web
 #### view
 
 #### js
-```js
-import getInfoWeb from 'info-web';
 
-const { iconUrl, title, description, status, errorMsg } = await getInfoWeb('https://example.com', axiosConfig)
+```js
+import getInfoWeb, { getTitle, getDescription, getIconUrl } from 'info-web';
+
+const { iconUrl, title, description, status, errorMsg } = await getInfoWeb(
+  'https://example.com',
+  axiosConfig
+);
 ```
 
 ## License
 
 [LICENSE](./LICENSE)
-
