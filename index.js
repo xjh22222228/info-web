@@ -101,7 +101,7 @@ export function getDescription(html) {
       REGEX.CONTENT_DOUBLE,
       REGEX.CONTENT_SINGLE
     );
-    if (description) return description;
+    if (description) return he.decode(description);
   }
   return '';
 }
