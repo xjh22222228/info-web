@@ -91,7 +91,9 @@ export function getDescription(html) {
         val.includes('name=description') ||
         val.includes(`name='description'`) ||
         val.includes('name="og:description"') ||
-        val.includes("name='og:description'")
+        val.includes("name='og:description'") ||
+        val.includes(`property="og:description"`) ||
+        val.includes(`property='og:description'`)
       )
     )
       continue;

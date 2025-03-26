@@ -306,3 +306,33 @@ describe('标题、描述含有实体字符', () => {
     );
   });
 });
+
+describe('property="og:description"', () => {
+  const html = `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="author" content="https://github.com/xjh22222228">
+ <meta property="og:description" content="test">
+
+`;
+
+  it('description', () => {
+    expect(getDescription(html)).toBe('test');
+  });
+
+  const html2 = `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="author" content="https://github.com/xjh22222228">
+ <meta property='og:description' content="test">
+
+`;
+
+  it('description', () => {
+    expect(getDescription(html2)).toBe('test');
+  });
+});
