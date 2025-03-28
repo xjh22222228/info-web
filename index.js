@@ -12,16 +12,22 @@ export const REGEX = {
   LINK_GLOBAL: /<link(.|\s)*?\/?>/gi,
   CONTENT_DOUBLE: /content="((.|\s)*?)"/i,
   CONTENT_SINGLE: /content='((.|\s)*?)'/i,
+  CONTENT_NO_QUOTE: /content=((.|\s)*?)\/?>/i,
   HREF_DOUBLE: /href="((.|\s)*?)"/i,
   HREF_SINGLE: /href='((.|\s)*?)'/i,
+  HREF_NO_QUOTE: /href=((.|\s)*?)\/?>/i,
   HTML_NOTE: /<!--(.|\s)*?-->/gm,
 };
 
-const getContent = (str, regexDouble, regexSingle) => {
+const getContent = (str, regexDouble, regexSingle, regexNoQuote) => {
   const matchDouble = str.match(regexDouble);
   const matchSingle = str.match(regexSingle);
+  const matchNoQuote = str.match(regexNoQuote);
   return (
-    (matchDouble && matchDouble[1]) || (matchSingle && matchSingle[1]) || ''
+    (matchDouble && matchDouble[1]) ||
+    (matchSingle && matchSingle[1]) ||
+    (matchNoQuote && matchNoQuote[1]) ||
+    ''
   );
 };
 
@@ -62,7 +68,12 @@ export function getIconUrl(str, origin, protocol) {
   for (const value of match) {
     const val = value.toLowerCase();
     if (!iconRelations.some((rel) => val.includes(rel))) continue;
-    const href = getContent(value, REGEX.HREF_DOUBLE, REGEX.HREF_SINGLE);
+    const href = getContent(
+      value,
+      REGEX.HREF_DOUBLE,
+      REGEX.HREF_SINGLE,
+      REGEX.HREF_NO_QUOTE
+    );
 
     if (!href) continue;
 
@@ -101,7 +112,8 @@ export function getDescription(html) {
     const description = getContent(
       value,
       REGEX.CONTENT_DOUBLE,
-      REGEX.CONTENT_SINGLE
+      REGEX.CONTENT_SINGLE,
+      REGEX.CONTENT_NO_QUOTE
     );
     if (description) return he.decode(description);
   }

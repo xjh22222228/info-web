@@ -336,3 +336,36 @@ describe('property="og:description"', () => {
     expect(getDescription(html2)).toBe('test');
   });
 });
+
+describe('属性值没有引号"', () => {
+  const html = `
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="author" content="https://github.com/xjh22222228">
+ <meta property="og:description" content="test">
+
+`;
+
+  it('description', () => {
+    expect(getDescription(html)).toBe('test');
+  });
+
+  const html2 = `
+<html lang=en><head>
+<meta charset=UTF-8>
+<meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+<meta name=keywords content=123>
+<meta name=description content=123>
+<link rel="shortcut icon" type=image/x-icon href=https://example.com/favicon.ico></meta>
+`;
+
+  it('description', () => {
+    expect(getDescription(html2)).toBe('123');
+  });
+
+  it('description', () => {
+    expect(getIconUrl(html2)).toBe('https://example.com/favicon.ico');
+  });
+});
