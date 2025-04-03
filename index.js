@@ -4,6 +4,12 @@ import axios from 'axios';
 import jschardet from 'jschardet';
 import url from 'node:url';
 import he from 'he';
+import https from 'node:https';
+
+const agent = new https.Agent({
+  // https://www.tlsbooks.com/ 证书错误
+  rejectUnauthorized: false, // 忽略证书错误
+});
 
 export const REGEX = {
   TITLE_GLOBAL: /<title.*?>([^<]*)?<\/title>/gi,
@@ -135,6 +141,7 @@ async function getWebInfo(url, axiosConf) {
   try {
     const { origin, protocol } = new URL(url);
     const { data } = await axios.get(url, {
+      httpsAgent: agent,
       ...axiosConf,
       headers: {
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
