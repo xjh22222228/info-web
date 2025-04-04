@@ -1,3 +1,5 @@
+import { describe, it, expect } from 'vitest';
+
 import { getTitle, getIconUrl, getDescription, REGEX } from './index.js';
 
 const origin = 'https://example.com';

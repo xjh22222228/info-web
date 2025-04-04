@@ -13,7 +13,7 @@
   "scripts": {
     "start": "node --watch test.js",
     "build": "rollup -c",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest index.test.js",
+    "test": "vitest",
     "release": "npm run test && npm run build && npm publish"
   },
   "author": "xiejiahe",
@@ -36,8 +36,8 @@
     "jschardet": "^3.1.4"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
     "rollup": "^4.35.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "vitest": "^3.1.1"
   }
 }
