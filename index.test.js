@@ -371,3 +371,30 @@ describe('属性值没有引号"', () => {
     expect(getIconUrl(html2)).toBe('https://example.com/favicon.ico');
   });
 });
+
+describe('描述为空"', () => {
+  const html = `
+<meta name="description" content="">
+`;
+
+  it('description', () => {
+    expect(getDescription(html)).toBe('');
+  });
+
+  const html2 = `
+<meta name='description' content=''>
+`;
+
+  it('description', () => {
+    expect(getDescription(html2)).toBe('');
+  });
+
+  const html3 = `
+<meta name='description' content=''>
+<meta name='description' content='2'>
+`;
+
+  it('description', () => {
+    expect(getDescription(html3)).toBe('2');
+  });
+});

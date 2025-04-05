@@ -29,12 +29,15 @@ const getContent = (str, regexDouble, regexSingle, regexNoQuote) => {
   const matchDouble = str.match(regexDouble);
   const matchSingle = str.match(regexSingle);
   const matchNoQuote = str.match(regexNoQuote);
-  return (
-    (matchDouble && matchDouble[1]) ||
-    (matchSingle && matchSingle[1]) ||
-    (matchNoQuote && matchNoQuote[1]) ||
-    ''
-  );
+  let content =
+    (matchDouble && matchDouble[1]) ??
+    (matchSingle && matchSingle[1]) ??
+    (matchNoQuote && matchNoQuote[1]) ??
+    '';
+  if (content === "''" || content === '""') {
+    content = '';
+  }
+  return content;
 };
 
 export function getTitle(str) {
@@ -166,7 +169,7 @@ async function getWebInfo(url, axiosConf) {
       errorMsg: '',
       iconUrl: finalIconUrl,
       title: getTitle(html).trim(),
-      description: getDescription(html).trim(),
+      description: getDescription(html),
     };
   } catch (error) {
     return {
