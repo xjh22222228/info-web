@@ -1,3 +1,6 @@
+// Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
+// See https://github.com/xjh22222228/info-web
+
 import { describe, it, expect } from 'vitest';
 
 import { getTitle, getIconUrl, getDescription, REGEX } from './index.js';
