@@ -401,3 +401,32 @@ describe('描述为空"', () => {
     expect(getDescription(html3)).toBe('2');
   });
 });
+
+describe('多个标题, 取有值的第一个"', () => {
+  const html = `
+<title>1</title>
+<title>2</title>
+`;
+
+  it('title', () => {
+    expect(getTitle(html)).toBe('1');
+  });
+
+  const html2 = `
+<title></title>
+<title>2</title>
+`;
+
+  it('title', () => {
+    expect(getTitle(html2)).toBe('2');
+  });
+
+  const html3 = `
+<title> </title>
+<title>2</title>
+`;
+
+  it('title', () => {
+    expect(getTitle(html3)).toBe('2');
+  });
+});

@@ -49,8 +49,9 @@ export function getTitle(str) {
   for (const value of match) {
     const result = value.match(REGEX.TITLE);
     const data = result?.[1];
-    if (data) {
+    if (data && data.trim()) {
       title = data;
+      break;
     }
   }
   return he.decode(title);
