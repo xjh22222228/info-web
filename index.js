@@ -5,6 +5,7 @@ import jschardet from 'jschardet';
 import url from 'node:url';
 import he from 'he';
 import https from 'node:https';
+import { JSDOM } from 'jsdom';
 
 const agent = new https.Agent({
   // https://www.tlsbooks.com/ 证书错误
@@ -12,122 +13,69 @@ const agent = new https.Agent({
 });
 
 export const REGEX = {
-  TITLE_GLOBAL: /<title.*?>([^<]*)?<\/title>/gi,
-  TITLE: /<title.*?>([^<]*)?<\/title>/i,
-  META_GLOBAL: /<meta(.|\s)*?\/?>/gi,
-  LINK_GLOBAL: /<link(.|\s)*?\/?>/gi,
-  CONTENT_DOUBLE: /content="((.|\s)*?)"/i,
-  CONTENT_SINGLE: /content='((.|\s)*?)'/i,
-  CONTENT_NO_QUOTE: /content=((.|\s)*?)\/?>/i,
-  HREF_DOUBLE: /href="((.|\s)*?)"/i,
-  HREF_SINGLE: /href='((.|\s)*?)'/i,
-  HREF_NO_QUOTE: /href=((.|\s)*?)\/?>/i,
   HTML_NOTE: /<!--(.|\s)*?-->/gm,
 };
 
-const getContent = (str, regexDouble, regexSingle, regexNoQuote) => {
-  const matchDouble = str.match(regexDouble);
-  const matchSingle = str.match(regexSingle);
-  const matchNoQuote = str.match(regexNoQuote);
-  let content =
-    (matchDouble && matchDouble[1]) ??
-    (matchSingle && matchSingle[1]) ??
-    (matchNoQuote && matchNoQuote[1]) ??
-    '';
-  if (content === "''" || content === '""') {
-    content = '';
-  }
-  return content;
-};
-
-export function getTitle(str) {
-  const match = str.match(REGEX.TITLE_GLOBAL);
-  if (!match) {
-    return '';
-  }
-  let title = '';
-  for (const value of match) {
-    const result = value.match(REGEX.TITLE);
-    const data = result?.[1];
-    if (data && data.trim()) {
-      title = data;
-      break;
+export function getTitle(html) {
+  const dom = new JSDOM(html);
+  const titles = dom.window.document.querySelectorAll('title');
+  for (const title of titles) {
+    const content = title?.textContent?.trim();
+    if (content) {
+      return he.decode(content);
     }
   }
-  return he.decode(title);
+  return '';
 }
 
-export function getIconUrl(str, origin, protocol) {
-  const iconRelations = [
-    'rel="icon"',
-    'rel=icon',
-    `rel='icon'`,
-    'rel="shortcut icon"',
-    `rel='shortcut icon'`,
-    `rel='icon shortcut'`,
-    `rel="icon shortcut"`,
-    'rel="apple-touch-icon-precomposed"',
-    `rel='apple-touch-icon-precomposed'`,
-    'rel="apple-touch-icon"',
-    `rel='apple-touch-icon'`,
+export function getIconUrl(html, origin, protocol) {
+  const selectors = [
+    'link[rel="icon"]',
+    'link[rel="shortcut icon"]',
+    'link[rel="icon shortcut"]',
+    'link[rel="apple-touch-icon-precomposed"]',
+    'link[rel="apple-touch-icon"]',
   ];
-
-  const match = str.match(REGEX.LINK_GLOBAL);
-  if (!Array.isArray(match)) return '';
-
-  for (const value of match) {
-    const val = value.toLowerCase();
-    if (!iconRelations.some((rel) => val.includes(rel))) continue;
-    const href = getContent(
-      value,
-      REGEX.HREF_DOUBLE,
-      REGEX.HREF_SINGLE,
-      REGEX.HREF_NO_QUOTE
-    );
-
-    if (!href) continue;
-
-    if (href.startsWith('data:image')) return href;
-    if (href.startsWith('://')) return protocol + href.slice(1);
-    if (href.startsWith('//')) {
-      return protocol + href;
+  const dom = new JSDOM(html);
+  for (const selector of selectors) {
+    const links = dom.window.document.querySelectorAll(selector);
+    for (const link of links) {
+      const href = link.getAttribute('href');
+      if (!href) continue;
+      if (href.startsWith('data:image')) return href;
+      if (href.startsWith('://')) return protocol + href.slice(1);
+      if (href.startsWith('//')) {
+        return protocol + href;
+      }
+      if (!href.includes('://')) {
+        return href.startsWith('/') ? origin + href : url.resolve(origin, href);
+      }
+      return href;
     }
-    if (!href.includes('://')) {
-      return href.startsWith('/') ? origin + href : url.resolve(origin, href);
-    }
-    return href;
   }
   return '';
 }
 
 export function getDescription(html) {
-  const match = html.match(REGEX.META_GLOBAL);
-  if (!Array.isArray(match)) return '';
-
-  for (const value of match) {
-    const val = value.toLowerCase();
-    if (
-      !(
-        val.includes('name="description"') ||
-        val.includes('name=description') ||
-        val.includes(`name='description'`) ||
-        val.includes('name="og:description"') ||
-        val.includes("name='og:description'") ||
-        val.includes(`property="og:description"`) ||
-        val.includes(`property='og:description'`)
-      )
-    )
-      continue;
-
-    const description = getContent(
-      value,
-      REGEX.CONTENT_DOUBLE,
-      REGEX.CONTENT_SINGLE,
-      REGEX.CONTENT_NO_QUOTE
-    );
-    if (description) return he.decode(description);
+  const selectors = [
+    'meta[name="description"]',
+    'meta[name="og:description"]',
+    'meta[name="twitter:description"]',
+    'meta[property="og:description"]',
+    'meta[property="twitter:description"]',
+  ];
+  let description = '';
+  const dom = new JSDOM(html);
+  go: for (const selector of selectors) {
+    const metas = dom.window.document.querySelectorAll(selector);
+    for (const meta of metas) {
+      if (meta?.content) {
+        description = meta.content;
+        break go;
+      }
+    }
   }
-  return '';
+  return he.decode(description);
 }
 
 async function getWebInfo(url, axiosConf) {
@@ -169,7 +117,7 @@ async function getWebInfo(url, axiosConf) {
       status: true,
       errorMsg: '',
       iconUrl: finalIconUrl,
-      title: getTitle(html).trim(),
+      title: getTitle(html),
       description: getDescription(html),
     };
   } catch (error) {

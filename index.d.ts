@@ -26,15 +26,7 @@ declare function getIconUrl(
 ): string;
 
 declare const REGEX: {
-  CONTENT_DOUBLE: RegExp;
-  CONTENT_SINGLE: RegExp;
-  HREF_DOUBLE: RegExp;
-  HREF_SINGLE: RegExp;
   HTML_NOTE: RegExp;
-  LINK_GLOBAL: RegExp;
-  META_GLOBAL: RegExp;
-  TITLE: RegExp;
-  TITLE_GLOBAL: RegExp;
 };
 
 export default getWebInfo;

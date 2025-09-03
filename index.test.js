@@ -74,7 +74,7 @@ describe('有尾标签', () => {
 `;
 
   it('title', () => {
-    expect(getTitle(html)).toBe(' Title ');
+    expect(getTitle(html)).toBe('Title');
   });
   it('icon', () => {
     expect(getIconUrl(html, origin, protocol)).toBe(`${origin}/logo.svg`);
@@ -100,7 +100,7 @@ describe('单引号', () => {
 `;
 
   it('title', () => {
-    expect(getTitle(html)).toBe(' Title ');
+    expect(getTitle(html)).toBe('Title');
   });
   it('icon', () => {
     expect(getIconUrl(html, origin, protocol)).toBe(`${origin}/logo.svg`);
@@ -126,7 +126,7 @@ describe('没有单引号和双引号', () => {
 `;
 
   it('title', () => {
-    expect(getTitle(html)).toBe(' Title ');
+    expect(getTitle(html)).toBe('Title');
   });
   it('icon', () => {
     expect(getIconUrl(html, origin, protocol)).toBe(`${origin}/logo.svg`);
@@ -370,7 +370,7 @@ describe('属性值没有引号"', () => {
     expect(getDescription(html2)).toBe('123');
   });
 
-  it('description', () => {
+  it('icon', () => {
     expect(getIconUrl(html2)).toBe('https://example.com/favicon.ico');
   });
 });
@@ -428,5 +428,15 @@ describe('多个标题, 取有值的第一个"', () => {
 
   it('title', () => {
     expect(getTitle(html3)).toBe('2');
+  });
+});
+
+describe('存在 >', () => {
+  const html = `
+  <meta name="description" content=">test">
+`;
+
+  it('title', () => {
+    expect(getDescription(html)).toBe('>test');
   });
 });

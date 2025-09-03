@@ -4,6 +4,6 @@
 import getWebInfo from './index.js';
 
 async function test() {
-  console.log(await getWebInfo('https://openrouter.ai/'));
+  console.log(await getWebInfo('https://example.com'));
 }
 test();
