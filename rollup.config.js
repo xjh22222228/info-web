@@ -11,5 +11,6 @@ export default {
     name: 'bundle',
     plugins: [terser()],
   },
+  external: ['jsdom', 'axios', 'jschardet', 'node:url', 'he', 'node:https'],
   plugins: [],
 };
