@@ -1,5 +1,5 @@
-// Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
-// See https://github.com/xjh22222228/info-web
+// Copyright @ 2024-present liuzi6612. All rights reserved. MIT license.
+// See https://github.com/liuzi6612/info-web
 
 import { AxiosRequestConfig } from 'axios';
 
@@ -14,7 +14,7 @@ interface WebInfo {
 
 declare function getWebInfo(
   url: string,
-  axiosConf?: AxiosRequestConfig
+  axiosConf?: AxiosRequestConfig,
 ): Promise<WebInfo>;
 
 declare function getTitle(str: string): string;
@@ -22,7 +22,7 @@ declare function getDescription(str: string): string;
 declare function getIconUrl(
   str: string,
   origin: string,
-  protocol: string
+  protocol: string,
 ): string;
 
 declare const REGEX: {

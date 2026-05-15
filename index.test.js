@@ -1,5 +1,5 @@
-// Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
-// See https://github.com/xjh22222228/info-web
+// Copyright @ 2024-present liuzi6612. All rights reserved. MIT license.
+// See https://github.com/liuzi6612/info-web
 
 import { describe, it, expect } from 'vitest';
 
@@ -15,7 +15,7 @@ describe('正常情况', () => {
 <title>Title</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
 <meta name="description" content="Description">
 <link rel="icon" href="/logo.svg">
 <link rel="apple-touch-icon" href="/favicon-128x128.png">
@@ -39,7 +39,7 @@ describe('被注释，获取应该为空', () => {
 <!--<title>Title</title>-->
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
 <!-- <meta name="description" content="Description"> -->
 <!--
 
@@ -65,7 +65,7 @@ describe('有尾标签', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name="description" content="Description"   /> 
 
 
@@ -91,7 +91,7 @@ describe('单引号', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name='description' content='Description'   /> 
 
 
@@ -117,7 +117,7 @@ describe('没有单引号和双引号', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name=description content='Description'   /> 
 
 
@@ -143,7 +143,7 @@ describe('图标没有http协议', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name=description content='Description'   /> 
 
 
@@ -161,7 +161,7 @@ describe('图标没有http协议', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name=description content='Description'   /> 
 
 
@@ -181,7 +181,7 @@ describe('图标是base64', () => {
 <title> Title </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name='description' content='Description'   /> 
 
 
@@ -190,7 +190,7 @@ describe('图标是base64', () => {
 `;
   it('icon', () => {
     expect(getIconUrl(html, origin, protocol)).toBe(
-      `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADlElEQVQ4jU2T`
+      `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADlElEQVQ4jU2T`,
     );
   });
 });
@@ -206,7 +206,7 @@ Title
 </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta
   name=description
   content='Description' 
@@ -241,7 +241,7 @@ Title
 </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta
   name=description
   content='Description' 
@@ -268,7 +268,7 @@ Title
 </title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta
   name=description
   content='Description' 
@@ -293,7 +293,7 @@ describe('标题、描述含有实体字符', () => {
 <title>Ti&#32;tle</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta name="description" content="&#x4f7f;&#x7528; WhatsApp Messenger &#x4e0e;&#x4eb2;&#x53cb;&#x4fdd;&#x6301;&#x8054;&#x7cfb;&#x3002;WhatsApp &#x5b8c;&#x5168;&#x514d;&#x8d39;&#xff0c;&#x53ef;&#x63d0;&#x4f9b;&#x7b80;&#x5355;&#x3001;&#x5b89;&#x5168;&#x3001;&#x53ef;&#x9760;&#x7684;&#x6d88;&#x606f;&#x4f20;&#x9001;&#x548c;&#x901a;&#x8bdd;&#x529f;&#x80fd;&#xff0c;&#x5728;&#x4e16;&#x754c;&#x5404;&#x5730;&#x7684;&#x667a;&#x80fd;&#x624b;&#x673a;&#x4e0a;&#x5747;&#x53ef;&#x4f7f;&#x7528;&#x3002;" />
 
 
@@ -307,7 +307,7 @@ describe('标题、描述含有实体字符', () => {
 
   it('description', () => {
     expect(getDescription(html)).toBe(
-      '使用 WhatsApp Messenger 与亲友保持联系。WhatsApp 完全免费，可提供简单、安全、可靠的消息传送和通话功能，在世界各地的智能手机上均可使用。'
+      '使用 WhatsApp Messenger 与亲友保持联系。WhatsApp 完全免费，可提供简单、安全、可靠的消息传送和通话功能，在世界各地的智能手机上均可使用。',
     );
   });
 });
@@ -318,7 +318,7 @@ describe('property="og:description"', () => {
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta property="og:description" content="test">
 
 `;
@@ -332,7 +332,7 @@ describe('property="og:description"', () => {
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta property='og:description' content="test">
 
 `;
@@ -348,7 +348,7 @@ describe('属性值没有引号"', () => {
 <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-<meta name="author" content="https://github.com/xjh22222228">
+<meta name="author" content="https://github.com/liuzi6612">
  <meta property="og:description" content="test">
 
 `;

@@ -3,9 +3,9 @@
   "version": "0.0.48",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xjh22222228/info-web.git"
+    "url": "git+https://github.com/liuzi6612/info-web.git"
   },
-  "homepage": "https://github.com/xjh22222228/info-web#readme",
+  "homepage": "https://github.com/liuzi6612/info-web#readme",
   "description": "get web info",
   "type": "module",
   "main": "index.min.js",
@@ -16,7 +16,7 @@
     "test": "vitest",
     "release": "npm run test && npm run build && npm publish"
   },
-  "author": "xiejiahe",
+  "author": "liuzi6612",
   "license": "MIT",
   "keywords": [
     "webinfo",

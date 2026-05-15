@@ -1,5 +1,5 @@
-// Copyright @ 2024-present xiejiahe. All rights reserved. MIT license.
-// See https://github.com/xjh22222228/info-web
+// Copyright @ 2024-present liuzi6612. All rights reserved. MIT license.
+// See https://github.com/liuzi6612/info-web
 import axios from 'axios';
 import jschardet from 'jschardet';
 import url from 'node:url';
